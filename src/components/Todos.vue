@@ -106,6 +106,19 @@ export default {
     focus (el) {
       el.focus()
     }
+  },
+  mounted () {
+    if (localStorage.todos) {
+      this.todos = JSON.parse(localStorage.todos)
+    }
+  },
+  watch: {
+    todos: {
+      handler () {
+        localStorage.todos = JSON.stringify(this.todos)
+      },
+      deep: true
+    }
   }
 }
 </script>
