@@ -16,7 +16,7 @@
             <label>{{ todo.name }}</label>
             <button class="destroy" @click="deleteTodo(todo)"></button>
           </div>
-          <input ref="edition" type="text" class="edit" v-show="editing === todo" v-model="todo.name" v-focus="todo === editing" @keyup.enter="doneEdition" @keyup.escape="doneEdition" @keyup.tab="doneEdition" @blur="doneEdition">
+          <input ref="edition" type="text" class="edit" v-show="editing === todo" v-model="todo.name" v-focus="todo === editing" @keyup.enter="doneEdition" @keyup.escape="cancelEdition" @keyup.tab="doneEdition" @blur="doneEdition">
         </li>
       </ul>
     </div>
@@ -39,6 +39,7 @@ export default {
       todos: [],
       newTodo: '',
       filters: [{
+
         id: 'all',
         label: 'Toutes',
         action: () => this.todos
@@ -97,9 +98,15 @@ export default {
     },
     startEdition (todo) {
       this.editing = todo
+      this.edition = todo.name
     },
     doneEdition () {
       this.editing = null
+      this.edition = null
+    },
+    cancelEdition () {
+      this.editing.name = this.edition
+      this.doneEdition()
     }
   },
   directives: {
