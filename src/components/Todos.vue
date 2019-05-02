@@ -10,12 +10,13 @@
         <label for="toggle-all">Mark all as complete</label>
       </template>
       <ul class="todo-list">
-        <li class="todo" v-for="todo in filteredTodos" :class="{completed: todo.completed}">
+        <li class="todo" v-for="todo in filteredTodos" :class="{completed: todo.completed, editing: todo === editing}" @dblclick="startEdition(todo)">
           <div class="view">
             <input type="checkbox" v-model="todo.completed" class="toggle">
             <label>{{ todo.name }}</label>
-            <button class="destroy" @click.prevent="deleteTodo(todo)"></button>
+            <button class="destroy" @click="deleteTodo(todo)"></button>
           </div>
+          <input ref="edition" type="text" class="edit" v-show="editing === todo" v-model="todo.name" v-focus="todo === editing" @keyup.enter="doneEdition" @keyup.escape="doneEdition" @keyup.tab="doneEdition" @blur="doneEdition">
         </li>
       </ul>
     </div>
@@ -50,7 +51,9 @@ export default {
         label: 'Faites',
         action: () => this.complete
       }],
-      filter: 'all'
+      filter: 'all',
+      editing: null,
+      edition: ''
     }
   },
   computed: {
@@ -91,6 +94,17 @@ export default {
     },
     clearCompleted () {
       this.todos = this.todos.filter(todo => !todo.completed)
+    },
+    startEdition (todo) {
+      this.editing = todo
+    },
+    doneEdition () {
+      this.editing = null
+    }
+  },
+  directives: {
+    focus (el) {
+      el.focus()
     }
   }
 }
